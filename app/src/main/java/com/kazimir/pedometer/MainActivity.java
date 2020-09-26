@@ -12,6 +12,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     SensorManager sensorManager;
     TextView tv_steps;
+    DatabaseHandler db;
     boolean running = false;
     private SensorEvent event;
 
