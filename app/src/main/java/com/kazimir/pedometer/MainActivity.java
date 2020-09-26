@@ -2,22 +2,21 @@ package com.kazimir.pedometer;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.hardware.*;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     DatabaseHandler db;
     boolean moving = false;
     BarChart barChart;
+    final int DAY_MIN = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +49,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         barChart = (BarChart) findViewById(R.id.graph);
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         insertDummyValuesToDb();
+        ArrayList<Integer> colors = new ArrayList<>();
         for (int i = 0; i <= 6; i++){
-            barEntries.add(new BarEntry(i,db.getStepCountForDay(getDateForDayMinusN(i + 1, "yyyyMMdd"))));
+            int steps = db.getStepCountForDay(getDateForDayMinusN(i + 1, "yyyyMMdd"));
+            BarEntry barEntry = new BarEntry( i, steps);
+            barEntries.add(barEntry);
+            colors.add(steps >= DAY_MIN ? Color.GREEN : Color.RED);
         }
         BarDataSet barDataSet = new BarDataSet(barEntries, "Steps");
         barDataSet.setValueTextColor(getResources().getColor(android.R.color.white));
+        barDataSet.setColors(colors);
+
+
+
 
         ArrayList<String> days = new ArrayList<>();
         days.add(getDateForDayMinusN(7,"dd.MM"));
@@ -115,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void insertDummyValuesToDb(){
         for(int i = 1; i <= 7; i++){
             Random random = new Random();
-            DayData dayData = new DayData(getDateForDayMinusN(i, "yyyyMMdd"), random.nextInt(30000));
+            DayData dayData = new DayData(getDateForDayMinusN(i, "yyyyMMdd"), random.nextInt(20000));
             db.updateDayDataOrCreate(dayData);
         }
     }
