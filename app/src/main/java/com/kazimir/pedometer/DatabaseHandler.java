@@ -88,7 +88,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     int getStepCountForDay(String date) {
 
         DayData dayData = getDayData(date);
-        return dayData.getSteps();
+        if (dayData != null) {
+            return dayData.getSteps();
+        } else {
+            return 0;
+        }
 
     }
 
