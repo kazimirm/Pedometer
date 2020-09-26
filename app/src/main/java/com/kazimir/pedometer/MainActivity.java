@@ -166,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onPause() {
         super.onPause();
-        db.updateDayDataOrCreate(new DayData(todaysDate, todaySteps));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -184,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             tv_steps.setText(String.valueOf(todaySteps));
             tv_distance.setText(String.format("%.1f km", getDistance(todaySteps)));
         }
+        db.updateDayData(new DayData(todaysDate, todaySteps));
     }
 
     private float getDistance(int steps) {

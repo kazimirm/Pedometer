@@ -49,6 +49,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Create tables again
         onCreate(db);
+        db.close();
     }
 
     void addDayData(DayData dayData) {
@@ -66,19 +67,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     DayData getDayData(String date) {
 
         SQLiteDatabase db = this.getReadableDatabase();
+        if (db != null) {
+            Cursor cursor = db.query(TABLE_STEPS, new String[]{KEY_DATE,
+                            KEY_COUNT}, KEY_DATE + "=?",
+                    new String[]{date}, null, null, null, null);
 
-        Cursor cursor = db.query(TABLE_STEPS, new String[]{KEY_DATE,
-                        KEY_COUNT}, KEY_DATE + "=?",
-                new String[]{date}, null, null, null, null);
+            int cursor_count = cursor.getCount();
+            if (cursor_count == 0) {
+                return null;
+            }
 
-        int cursor_count = cursor.getCount();
-        if (cursor_count == 0) {
-            return null;
+            cursor.moveToFirst();
+
+            DayData dayData = new DayData(cursor.getString(0), Integer.parseInt(cursor.getString(1)));
+            db.close();
+
+            return dayData;
         }
-
-        cursor.moveToFirst();
-
-        return new DayData(cursor.getString(0), Integer.parseInt(cursor.getString(1)));
+        return null;
     }
 
     int getStepCountForDay(String date) {
@@ -92,14 +98,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
-    public int updateDayData(DayData dayData) {
+    public void updateDayData(DayData dayData) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(KEY_COUNT, dayData.getSteps());
 
-        return db.update(TABLE_STEPS, values, KEY_DATE + " = ?",
+        db.update(TABLE_STEPS, values, KEY_DATE + " = ?",
                 new String[]{dayData.getDate()});
+        db.close();
     }
 
     public void updateDayDataOrCreate(DayData newDayData) {
