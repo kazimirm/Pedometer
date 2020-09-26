@@ -18,10 +18,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_COUNT = "COUNT";
 
 
-
     private DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        //3rd argument to be passed is CursorFactory instance
     }
 
     public static synchronized DatabaseHandler getInstance(Context context) {
@@ -39,8 +37,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_CONTACTS_TABLE =
                 "CREATE TABLE " + TABLE_STEPS +
-                "(" + KEY_DATE + " STRING PRIMARY KEY,"
-                    + KEY_COUNT + " INTEGER" + ")";
+                        "(" + KEY_DATE + " STRING PRIMARY KEY,"
+                        + KEY_COUNT + " INTEGER" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -53,7 +51,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-
     void addDayData(DayData dayData) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -61,22 +58,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_DATE, dayData.getDate());
         values.put(KEY_COUNT, dayData.getSteps());
 
-        // Inserting Row
         db.insert(TABLE_STEPS, null, values);
         //2nd argument is String containing nullColumnHack
-        db.close(); // Closing database connection
+        db.close();
     }
 
     DayData getDayData(String date) {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_STEPS, new String[] { KEY_DATE,
-                        KEY_COUNT }, KEY_DATE + "=?",
-                new String[] { date }, null, null, null, null);
+        Cursor cursor = db.query(TABLE_STEPS, new String[]{KEY_DATE,
+                        KEY_COUNT}, KEY_DATE + "=?",
+                new String[]{date}, null, null, null, null);
 
-        int cursor_count =  cursor.getCount();
-        if (cursor_count == 0 ){
+        int cursor_count = cursor.getCount();
+        if (cursor_count == 0) {
             return null;
         }
 
@@ -103,7 +99,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_COUNT, dayData.getSteps());
 
         return db.update(TABLE_STEPS, values, KEY_DATE + " = ?",
-                new String[] { dayData.getDate() });
+                new String[]{dayData.getDate()});
     }
 
     public void updateDayDataOrCreate(DayData newDayData) {
@@ -116,8 +112,4 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             addDayData(newDayData);
         }
     }
-
-
-
-
 }
