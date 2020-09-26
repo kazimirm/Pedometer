@@ -39,8 +39,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     DatabaseHandler db;
     BarChart barChart;
 
-    int stepCounter, since_boot, todayOffset, todaySteps;
-    String todaysDate;
+    private int todayOffset;
+    private String todaysDate;
 
     final int DAY_MIN = 10000;
     final int STEP_SIZE = 70;
@@ -50,14 +50,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        stepCounter = 0;
         tv_steps = (TextView) findViewById(R.id.tv_steps);
         tv_distance = (TextView) findViewById(R.id.tv_distance);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         db = DatabaseHandler.getInstance(this);
 
         createGraph();
-
     }
 
     /**
@@ -69,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         //remove this if You want to run with real values
         insertDummyValuesToDb();
+        //
 
         ArrayList<Integer> colors = new ArrayList<>();
         ArrayList<String> days = new ArrayList<>();
@@ -171,8 +170,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onSensorChanged(SensorEvent event) {
-        since_boot = (int) event.values[0];
-        todaySteps = db.getStepCountForDay(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        int since_boot = (int) event.values[0];
+        int todaySteps = db.getStepCountForDay(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
 
         if (todaySteps == 0) {
             todayOffset = since_boot;
