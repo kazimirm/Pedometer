@@ -7,10 +7,13 @@ This is an android app in java (1.8) of a simple pedometer for counting steps ta
 
 ![Alt text](Images/goal.jpg?raw=true "Goal")
 
-#My app
+# My app
 ![Alt text](Images/Screenshot_20200926-233802_pedometer.jpg?raw=true "Goal")
-#
-Used classes:
+
+
+
+
+# Used classes:
 
 [DatabaseHandler] handles all IO operations with database. App uses one table USER_DATA where are stored data for each date so the statistics can be retrieved after device restart as well.
 [DayData] represents on day of data - so it can be easily extended later
