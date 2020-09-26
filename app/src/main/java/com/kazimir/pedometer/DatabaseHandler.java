@@ -106,6 +106,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 new String[] { dayData.getDate() });
     }
 
+    public void updateDayDataOrCreate(DayData newDayData) {
+        String date = newDayData.getDate();
+        DayData dayData = getDayData(date);
+
+        if (dayData != null) {
+            updateDayData(newDayData);
+        } else {
+            addDayData(newDayData);
+        }
+    }
+
+
 
 
 }

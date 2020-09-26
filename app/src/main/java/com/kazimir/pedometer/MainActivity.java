@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             barEntries.add(new BarEntry(i,db.getStepCountForDay(getDateForDayMinusN(i + 1, "yyyyMMdd"))));
         }
         BarDataSet barDataSet = new BarDataSet(barEntries, "Steps");
+        barDataSet.setValueTextColor(getResources().getColor(android.R.color.white));
 
         ArrayList<String> days = new ArrayList<>();
         days.add(getDateForDayMinusN(7,"dd.MM"));
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         barChart.setDrawBorders(false);
         barChart.setDrawGridBackground(false);
 
+
         barChart.getDescription().setEnabled(false);
         barChart.getLegend().setEnabled(false);
 
@@ -88,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         barChart.getXAxis().setDrawGridLines(false);
         barChart.getXAxis().setDrawAxisLine(false);
         barChart.getXAxis().setTextColor(getResources().getColor(android.R.color.white));
-        barChart.getAxisLeft().setTextColor(getResources().getColor(android.R.color.white));
 
         barChart.getAxisRight().setDrawGridLines(false);
         barChart.getAxisRight().setDrawLabels(false);
@@ -115,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         for(int i = 1; i <= 7; i++){
             Random random = new Random();
             DayData dayData = new DayData(getDateForDayMinusN(i, "yyyyMMdd"), random.nextInt(30000));
-            db.addDayData(dayData);
+            db.updateDayDataOrCreate(dayData);
         }
     }
 
