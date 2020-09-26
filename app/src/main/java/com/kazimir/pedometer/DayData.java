@@ -34,4 +34,9 @@ public class DayData {
     public void setSteps(int steps) {
         this.steps = steps;
     }
+
+
+    public float getDistance() {
+        return distance;
+    }
 }
