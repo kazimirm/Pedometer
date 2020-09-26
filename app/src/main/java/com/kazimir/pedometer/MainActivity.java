@@ -27,18 +27,23 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     SensorManager sensorManager;
-    TextView tv_steps;
+    TextView tv_steps, tv_distance;
     DatabaseHandler db;
     boolean moving = false;
     BarChart barChart;
     final int DAY_MIN = 10000;
+    final int UPDATE_LIMIT = 100;
+    final int STEP_SIZE = 70;
+    int stepCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        stepCounter = 0;
         tv_steps = (TextView) findViewById(R.id.tv_steps);
+        tv_distance = (TextView) findViewById(R.id.tv_distance);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         db = DatabaseHandler.getInstance(this);
 
@@ -157,7 +162,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (moving){
             int dailySteps = (int) event.values[0];
             tv_steps.setText(String.valueOf(dailySteps));
+            tv_distance.setText(String.format("%.1f km", getDistance(dailySteps)));
         }
+    }
+
+    private float getDistance(int steps){
+        float distance = steps * STEP_SIZE;
+        return (distance / 100000);
     }
 
     @Override

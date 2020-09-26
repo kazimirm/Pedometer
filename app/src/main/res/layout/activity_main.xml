@@ -17,13 +17,26 @@
             android:layout_height="wrap_content"
             android:text="Steps"
             android:textColor="#FF0000"
-            android:textSize="50dp"
+            android:textSize="70dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" android:id="@+id/tv_steps" android:background="#008A0404"
-            app:layout_constraintHorizontal_bias="0.538" app:layout_constraintVertical_bias="0.127"
+            app:layout_constraintHorizontal_bias="0.54" app:layout_constraintVertical_bias="0.024"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
     />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.0 km"
+            android:textColor="#FF0000"
+            android:textSize="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:id="@+id/tv_distance" android:background="#008A0404"
+            app:layout_constraintHorizontal_bias="0.535" app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_steps"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

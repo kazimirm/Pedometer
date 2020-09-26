@@ -5,8 +5,6 @@ public class DayData {
     //date format YYYYMMDD
     private String date;
     private int steps;
-    private float distance;
-    private int STEP_SIZE = 70;
 
     public DayData() {
 
@@ -15,7 +13,6 @@ public class DayData {
     public DayData(String date, int steps) {
         this.date = date;
         this.steps = steps;
-        this.distance = steps * (STEP_SIZE / 100000);
     }
 
 
@@ -33,10 +30,5 @@ public class DayData {
 
     public void setSteps(int steps) {
         this.steps = steps;
-    }
-
-
-    public float getDistance() {
-        return distance;
     }
 }
