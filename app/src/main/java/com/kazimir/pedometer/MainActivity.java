@@ -17,6 +17,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -49,31 +50,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         insertDummyValuesToDb();
         for (int i = 0; i <= 6; i++){
-            barEntries.add(new BarEntry(0,db.getStepCountForDay(getDateForDayMinusN(i + 1))));
-            barEntries.add(new BarEntry(1,db.getStepCountForDay(getDateForDayMinusN(i + 1))));
-            barEntries.add(new BarEntry(2,db.getStepCountForDay(getDateForDayMinusN(i + 1))));
-            barEntries.add(new BarEntry(3,db.getStepCountForDay(getDateForDayMinusN(i + 1))));
-            barEntries.add(new BarEntry(4,db.getStepCountForDay(getDateForDayMinusN(i + 1))));
-            barEntries.add(new BarEntry(5,db.getStepCountForDay(getDateForDayMinusN(i + 1))));
-            barEntries.add(new BarEntry(6,db.getStepCountForDay(getDateForDayMinusN(i + 1))));
+            barEntries.add(new BarEntry(i,db.getStepCountForDay(getDateForDayMinusN(i + 1, "yyyyMMdd"))));
         }
-//        barEntries.add(new BarEntry(0,657));
-//        barEntries.add(new BarEntry(1,43));
-//        barEntries.add(new BarEntry(2,4));
-//        barEntries.add(new BarEntry(3,317));
-//        barEntries.add(new BarEntry(4,13));
-//        barEntries.add(new BarEntry(5,444));
-//        barEntries.add(new BarEntry(6,333));
         BarDataSet barDataSet = new BarDataSet(barEntries, "Steps");
 
         ArrayList<String> days = new ArrayList<>();
-        days.add(getDayForDayMinusN(7));
-        days.add(getDayForDayMinusN(6));
-        days.add(getDayForDayMinusN(5));
-        days.add(getDayForDayMinusN(4));
-        days.add(getDayForDayMinusN(3));
-        days.add(getDayForDayMinusN(2));
-        days.add(getDayForDayMinusN(1));
+        days.add(getDateForDayMinusN(7,"dd.MM"));
+        days.add(getDateForDayMinusN(6,"dd.MM"));
+        days.add(getDateForDayMinusN(5,"dd.MM"));
+        days.add(getDateForDayMinusN(4,"dd.MM"));
+        days.add(getDateForDayMinusN(3,"dd.MM"));
+        days.add(getDateForDayMinusN(2,"dd.MM"));
+        days.add(getDateForDayMinusN(1,"dd.MM"));
 
         XAxis xAxis = barChart.getXAxis();
         xAxis.setValueFormatter(new IndexAxisValueFormatter(days));
@@ -100,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         barChart.getXAxis().setDrawGridLines(false);
         barChart.getXAxis().setDrawAxisLine(false);
         barChart.getXAxis().setTextColor(getResources().getColor(android.R.color.white));
+        barChart.getAxisLeft().setTextColor(getResources().getColor(android.R.color.white));
 
         barChart.getAxisRight().setDrawGridLines(false);
         barChart.getAxisRight().setDrawLabels(false);
@@ -111,13 +100,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
 
-    private String getDateForDayMinusN(int n){
-        String date = new SimpleDateFormat("yyyyMMdd").format(dayMinusN(n));
-        return date;
-    }
-
-    private String getDayForDayMinusN(int n){
-        String date = new SimpleDateFormat("dd.MM").format(dayMinusN(n));
+    private String getDateForDayMinusN(int n, String format){
+        String date = new SimpleDateFormat(format).format(dayMinusN(n));
         return date;
     }
 
@@ -130,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void insertDummyValuesToDb(){
         for(int i = 1; i <= 7; i++){
             Random random = new Random();
-            DayData dayData = new DayData(getDayForDayMinusN(1), random.nextInt(30000));
+            DayData dayData = new DayData(getDateForDayMinusN(i, "yyyyMMdd"), random.nextInt(30000));
             db.addDayData(dayData);
         }
     }
