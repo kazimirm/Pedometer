@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     final int DAY_MIN = 10000;
     final int STEP_SIZE = 70;
+    final int DAYS_IN_STATISTICS = 7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,13 +72,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         ArrayList<Integer> colors = new ArrayList<>();
         ArrayList<String> days = new ArrayList<>();
-        for (int i = 0; i <= 6; i++) {
+        for (int i = 0; i < DAYS_IN_STATISTICS; i++) {
 
             int steps = db.getStepCountForDay(getDateForDayMinusN(i + 1, "yyyyMMdd"));
             BarEntry barEntry = new BarEntry(i, steps);
 
             barEntries.add(barEntry);
-            days.add(getDateForDayMinusN(7 - i, "dd.MM"));
+            days.add(getDateForDayMinusN(DAYS_IN_STATISTICS - i, "dd.MM"));
 
             colors.add(steps >= DAY_MIN ? Color.GREEN : Color.RED);
         }
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
      * Method for testing purposes - inserts random values for past days to demonstrate beauty of graph
      */
     private void insertDummyValuesToDb() {
-        for (int i = 1; i <= 7; i++) {
+        for (int i = 1; i <= DAYS_IN_STATISTICS; i++) {
             Random random = new Random();
             DayData dayData = new DayData(getDateForDayMinusN(i, "yyyyMMdd"), random.nextInt(20000));
             db.updateDayDataOrCreate(dayData);
