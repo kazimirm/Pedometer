@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             BarEntry barEntry = new BarEntry(i, steps);
 
             barEntries.add(barEntry);
-            days.add(getDateForDayMinusN(i + 1, "dd.MM"));
+            days.add(getDateForDayMinusN(7 - i, "dd.MM"));
 
             colors.add(steps >= DAY_MIN ? Color.GREEN : Color.RED);
         }
