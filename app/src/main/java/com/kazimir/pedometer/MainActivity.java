@@ -1,6 +1,8 @@
 package com.kazimir.pedometer;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -9,7 +11,6 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,26 +36,55 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     SensorManager sensorManager;
     DatabaseHandler database;
-
+    SharedPreferences preferences;
     ActivityMainBinding binding;
 
     private int todayOffset;
+    private int todaySteps;
     private String todaysDate;
 
+    private int stepLength;
+
+
     final int DAY_MIN = 10000;
-    final int STEP_SIZE = 70;
+    final int STEP_LENGTH_DEFAULT = 70;
     final int DAYS_IN_STATISTICS = 7;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        preferences = getSharedPreferences("settings", 0);
+        stepLength = preferences.getInt("stepLength", STEP_LENGTH_DEFAULT);
+
+        if (stepLength != STEP_LENGTH_DEFAULT){
+            SharedPreferences.Editor edit= preferences.edit();
+            edit.putInt("stepLength", stepLength);
+            edit.commit();
+        }
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         database = DatabaseHandler.getInstance(this);
+        todaySteps = database.getStepCountForDay(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+
+        binding.textViewSteps.setText(String.valueOf(todaySteps));
+        binding.textViewDistance.setText(String.format("%.1f km", getDistance(todaySteps)));
+
+        binding.buttonSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSettings();
+            }
+        });
 
         createGraph();
+    }
+
+    private void openSettings(){
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -179,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         int since_boot = (int) event.values[0];
-        int todaySteps = database.getStepCountForDay(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        todaySteps = database.getStepCountForDay(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
 
         if (todaySteps == 0) {
             todayOffset = since_boot;
@@ -195,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private float getDistance(int steps) {
-        float distance = steps * STEP_SIZE;
+        float distance = steps * stepLength;
         return (distance / 100000);
     }
 
