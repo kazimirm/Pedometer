@@ -20,6 +20,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.kazimir.pedometer.databinding.ActivityMainBinding;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -33,9 +34,9 @@ import java.util.*;
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     SensorManager sensorManager;
-    TextView textViewSteps;
-    TextView textViewDistance;
     DatabaseHandler database;
+
+    ActivityMainBinding binding;
 
     private int todayOffset;
     private String todaysDate;
@@ -47,10 +48,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        textViewSteps = (TextView) findViewById(R.id.textViewSteps);
-        textViewDistance = (TextView) findViewById(R.id.textViewDistance);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         database = DatabaseHandler.getInstance(this);
 
@@ -188,8 +188,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             database.updateDayDataOrCreate(new DayData(todaysDate, todaySteps));
         } else {
             todaySteps = since_boot - todayOffset;
-            textViewSteps.setText(String.valueOf(todaySteps));
-            textViewDistance.setText(String.format("%.1f km", getDistance(todaySteps)));
+            binding.textViewSteps.setText(String.valueOf(todaySteps));
+            binding.textViewDistance.setText(String.format("%.1f km", getDistance(todaySteps)));
         }
         database.updateDayData(new DayData(todaysDate, todaySteps));
     }
