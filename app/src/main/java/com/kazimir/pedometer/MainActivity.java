@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             todayOffset = since_boot;
             todaysDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             todaySteps++;
-            db.updateDayDataOrCreate(new DayData(todaysDate, todaySteps));
+            database.updateDayDataOrCreate(new DayData(todaysDate, todaySteps));
         } else {
             todaySteps = since_boot - todayOffset;
             textViewSteps.setText(String.valueOf(todaySteps));
