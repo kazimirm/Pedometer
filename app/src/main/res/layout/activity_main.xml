@@ -48,10 +48,18 @@
 
     <Button
         android:id="@+id/buttonSettings"
-        android:layout_width="59dp"
+        android:layout_width="57dp"
         android:layout_height="57dp"
         android:background="@drawable/settings"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonStats"
+        android:layout_width="57dp"
+        android:layout_height="57dp"
+        android:background="@drawable/statistics"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -69,7 +69,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         database = DatabaseHandler.getInstance(this);
         todaySteps = database.getStepCountForDay(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
 
+        createGraph();
         binding.textViewSteps.setText(String.valueOf(todaySteps));
+
         binding.textViewDistance.setText(String.format("%.1f km", getDistance(todaySteps)));
 
         binding.buttonSettings.setOnClickListener(new View.OnClickListener() {
@@ -79,11 +81,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
-        createGraph();
+        binding.buttonStats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openStats();
+            }
+        });
+
+
     }
 
     private void openSettings(){
         Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    private void openStats(){
+        Intent intent = new Intent(this, StatsActivity.class);
         startActivity(intent);
     }
 
