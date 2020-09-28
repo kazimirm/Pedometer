@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     TextView textViewSteps;
     TextView textViewDistance;
     DatabaseHandler database;
-    BarChart barChart;
 
     private int todayOffset;
     private String todaysDate;
@@ -64,7 +63,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
      * Method for setting all graph parameters and values
      */
     private void createGraph() {
-        barChart = (BarChart) findViewById(R.id.graph);
+        BarChart barChart = (BarChart) findViewById(R.id.graph);
+        addDataToGraph(barChart);
+        formatGraph(barChart);
+    }
+
+    private void addDataToGraph(BarChart barChart){
+
         ArrayList<BarEntry> barEntries = new ArrayList<>();
 
         //remove this if You want to run with real values
@@ -89,8 +94,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         barDataSet.setValueTextSize(10);
         barDataSet.setColors(colors);
 
+        BarData barData = new BarData(barDataSet);
         XAxis xAxis = barChart.getXAxis();
         xAxis.setValueFormatter(new IndexAxisValueFormatter(days));
+
+        barChart.setData(barData);
+    }
+
+    private void formatGraph(BarChart barChart){
+        XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         LimitLine ll = new LimitLine(DAY_MIN);
@@ -122,10 +134,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         barChart.getAxisRight().setDrawGridLines(false);
         barChart.getAxisRight().setDrawLabels(false);
         barChart.getAxisRight().setDrawAxisLine(false);
-
-        BarData barData = new BarData(barDataSet);
-        barChart.setData(barData);
-
     }
 
     private String getDateForDayMinusN(int n, String format) {
