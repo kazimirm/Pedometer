@@ -5,14 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
-
-import com.github.mikephil.charting.data.BarEntry;
-import com.kazimir.pedometer.databinding.ActivitySettingsBinding;
 import com.kazimir.pedometer.databinding.ActivityStatsBinding;
 
 import java.util.ArrayList;
@@ -59,12 +54,12 @@ public class StatsActivity extends AppCompatActivity {
 
     }
 
-    private void openMain(){
+    private void openMain() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
-    private List<DayData> getLastNDays(int n){
+    private List<DayData> getLastNDays(int n) {
         List<DayData> dayDataList = new ArrayList<>();
         for (int i = 1; i <= n; i++) {
             DayData dayData = database.getDayData(main.getDateForDayMinusN(i, "yyyyMMdd"));
@@ -73,7 +68,7 @@ public class StatsActivity extends AppCompatActivity {
         return dayDataList;
     }
 
-    private void displayData(DayData max, DayData min){
+    private void displayData(DayData max, DayData min) {
         binding.textViewMax.setText(String.format("Max distance in km for last %d days = %s with date %s", DAYS_IN_STATISTICS, max.getDistance(stepLength), max.getDate()));
         binding.textViewMin.setText(String.format("Min distance in km for last %d days = %s with date %s", DAYS_IN_STATISTICS, min.getDistance(stepLength), min.getDate()));
     }

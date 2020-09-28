@@ -9,7 +9,9 @@ This is an android app in java (1.8) of a simple pedometer for counting steps ta
 ![Alt text](Images/goal.jpg?raw=true "Goal")
 
 # My app
-![Alt text](Images/Screenshot_20200926-233802_pedometer.jpg?raw=true "Goal")
+![Alt text](Images/Screenshot_20200928-213810_pedometer.jpg?raw=true "My_main")
+![Alt text](Images/Screenshot_20200928-213749_pedometer.jpg?raw=true "My_settings")
+![Alt text](Images/Screenshot_20200928-213818_pedometer.jpg?raw=true "My_stats")
 
 
 

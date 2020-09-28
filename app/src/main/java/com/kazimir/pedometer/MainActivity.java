@@ -12,8 +12,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
@@ -40,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     ActivityMainBinding binding;
 
     private int todayOffset;
-    private int todaySteps;
     private String todaysDate;
 
     private int stepLength;
@@ -60,8 +61,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         preferences = getSharedPreferences("settings", 0);
         stepLength = preferences.getInt("stepLength", STEP_LENGTH_DEFAULT);
 
-        if (stepLength != STEP_LENGTH_DEFAULT){
-            SharedPreferences.Editor edit= preferences.edit();
+        if (stepLength != STEP_LENGTH_DEFAULT) {
+            SharedPreferences.Editor edit = preferences.edit();
             edit.putInt("stepLength", stepLength);
             edit.commit();
         }
@@ -91,12 +92,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
-    private void openSettings(){
+    private void openSettings() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
 
-    private void openStats(){
+    private void openStats() {
         Intent intent = new Intent(this, StatsActivity.class);
         startActivity(intent);
     }
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         formatGraph(barChart);
     }
 
-    private void addDataToGraph(BarChart barChart){
+    private void addDataToGraph(BarChart barChart) {
 
         List<BarEntry> barEntries = new ArrayList<>();
 
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         barChart.setData(barData);
     }
 
-    private void formatGraph(BarChart barChart){
+    private void formatGraph(BarChart barChart) {
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
@@ -223,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         int since_boot = (int) event.values[0];
-        todaySteps = database.getStepCountForDay(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        int todaySteps = database.getStepCountForDay(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
 
         if (todaySteps == 0) {
             todayOffset = since_boot;
