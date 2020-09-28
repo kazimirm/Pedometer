@@ -4,7 +4,7 @@
 -https://en.wikipedia.org/wiki/Pedometer
 
 #
-This is an android app in java (1.8) of a simple pedometer for counting steps taking info from hardware TYPE_STEP_COUNTER target device must have this component. Distance is calculated according to number of steps which is then multiplied by average distance of step (70 cm). The goal was to create app according to photo:
+This is an android app in java 11 of a simple pedometer for counting steps taking info from hardware TYPE_STEP_COUNTER target device must have this component. Distance is calculated according to number of steps which is then multiplied by average distance of step (70 cm). The goal was to create app according to photo:
 
 ![Alt text](Images/goal.jpg?raw=true "Goal")
 
