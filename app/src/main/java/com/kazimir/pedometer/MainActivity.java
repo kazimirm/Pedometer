@@ -35,8 +35,9 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     SensorManager sensorManager;
-    TextView tv_steps, tv_distance;
-    DatabaseHandler db;
+    TextView textViewSteps;
+    TextView textViewDistance;
+    DatabaseHandler database;
     BarChart barChart;
 
     private int todayOffset;
@@ -51,10 +52,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tv_steps = (TextView) findViewById(R.id.tv_steps);
-        tv_distance = (TextView) findViewById(R.id.tv_distance);
+        textViewSteps = (TextView) findViewById(R.id.textViewSteps);
+        textViewDistance = (TextView) findViewById(R.id.textViewDistance);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        db = DatabaseHandler.getInstance(this);
+        database = DatabaseHandler.getInstance(this);
 
         createGraph();
     }
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         ArrayList<String> days = new ArrayList<>();
         for (int i = 0; i < DAYS_IN_STATISTICS; i++) {
 
-            int steps = db.getStepCountForDay(getDateForDayMinusN(i + 1, "yyyyMMdd"));
+            int steps = database.getStepCountForDay(getDateForDayMinusN(i + 1, "yyyyMMdd"));
             BarEntry barEntry = new BarEntry(i, steps);
 
             barEntries.add(barEntry);
@@ -145,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         for (int i = 1; i <= DAYS_IN_STATISTICS; i++) {
             Random random = new Random();
             DayData dayData = new DayData(getDateForDayMinusN(i, "yyyyMMdd"), random.nextInt(20000));
-            db.updateDayDataOrCreate(dayData);
+            database.updateDayDataOrCreate(dayData);
         }
     }
 
@@ -172,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         int since_boot = (int) event.values[0];
-        int todaySteps = db.getStepCountForDay(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        int todaySteps = database.getStepCountForDay(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
 
         if (todaySteps == 0) {
             todayOffset = since_boot;
@@ -180,10 +181,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             todaySteps++;
         } else {
             todaySteps = since_boot - todayOffset;
-            tv_steps.setText(String.valueOf(todaySteps));
-            tv_distance.setText(String.format("%.1f km", getDistance(todaySteps)));
+            textViewSteps.setText(String.valueOf(todaySteps));
+            textViewDistance.setText(String.format("%.1f km", getDistance(todaySteps)));
         }
-        db.updateDayData(new DayData(todaysDate, todaySteps));
+        database.updateDayData(new DayData(todaysDate, todaySteps));
     }
 
     private float getDistance(int steps) {
