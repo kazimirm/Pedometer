@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.RequiresApi;
@@ -23,10 +24,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 
 /**
  * TYPE_STEP_COUNTER documentation: https://developer.android.com/reference/android/hardware/Sensor.html#TYPE_STEP_COUNTER
@@ -70,14 +68,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private void addDataToGraph(BarChart barChart){
 
-        ArrayList<BarEntry> barEntries = new ArrayList<>();
+        List<BarEntry> barEntries = new ArrayList<>();
 
         //remove this if You want to run with real values
         insertDummyValuesToDb();
         //
 
-        ArrayList<Integer> colors = new ArrayList<>();
-        ArrayList<String> days = new ArrayList<>();
+        List<Integer> colors = new ArrayList<>();
+        List<String> days = new ArrayList<>();
         for (int i = 0; i < DAYS_IN_STATISTICS; i++) {
 
             int steps = database.getStepCountForDay(getDateForDayMinusN(i + 1, "yyyyMMdd"));
