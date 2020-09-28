@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.RequiresApi;
@@ -23,10 +24,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 
 /**
  * TYPE_STEP_COUNTER documentation: https://developer.android.com/reference/android/hardware/Sensor.html#TYPE_STEP_COUNTER
@@ -35,9 +33,9 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     SensorManager sensorManager;
-    TextView tv_steps, tv_distance;
-    DatabaseHandler db;
-    BarChart barChart;
+    TextView textViewSteps;
+    TextView textViewDistance;
+    DatabaseHandler database;
 
     private int todayOffset;
     private String todaysDate;
@@ -51,10 +49,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tv_steps = (TextView) findViewById(R.id.tv_steps);
-        tv_distance = (TextView) findViewById(R.id.tv_distance);
+        textViewSteps = (TextView) findViewById(R.id.textViewSteps);
+        textViewDistance = (TextView) findViewById(R.id.textViewDistance);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        db = DatabaseHandler.getInstance(this);
+        database = DatabaseHandler.getInstance(this);
 
         createGraph();
     }
@@ -63,18 +61,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
      * Method for setting all graph parameters and values
      */
     private void createGraph() {
-        barChart = (BarChart) findViewById(R.id.graph);
-        ArrayList<BarEntry> barEntries = new ArrayList<>();
+        BarChart barChart = (BarChart) findViewById(R.id.graph);
+        addDataToGraph(barChart);
+        formatGraph(barChart);
+    }
+
+    private void addDataToGraph(BarChart barChart){
+
+        List<BarEntry> barEntries = new ArrayList<>();
 
         //remove this if You want to run with real values
         insertDummyValuesToDb();
         //
 
-        ArrayList<Integer> colors = new ArrayList<>();
-        ArrayList<String> days = new ArrayList<>();
+        List<Integer> colors = new ArrayList<>();
+        List<String> days = new ArrayList<>();
         for (int i = 0; i < DAYS_IN_STATISTICS; i++) {
 
-            int steps = db.getStepCountForDay(getDateForDayMinusN(i + 1, "yyyyMMdd"));
+            int steps = database.getStepCountForDay(getDateForDayMinusN(i + 1, "yyyyMMdd"));
             BarEntry barEntry = new BarEntry(i, steps);
 
             barEntries.add(barEntry);
@@ -88,8 +92,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         barDataSet.setValueTextSize(10);
         barDataSet.setColors(colors);
 
+        BarData barData = new BarData(barDataSet);
         XAxis xAxis = barChart.getXAxis();
         xAxis.setValueFormatter(new IndexAxisValueFormatter(days));
+
+        barChart.setData(barData);
+    }
+
+    private void formatGraph(BarChart barChart){
+        XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         LimitLine ll = new LimitLine(DAY_MIN);
@@ -121,10 +132,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         barChart.getAxisRight().setDrawGridLines(false);
         barChart.getAxisRight().setDrawLabels(false);
         barChart.getAxisRight().setDrawAxisLine(false);
-
-        BarData barData = new BarData(barDataSet);
-        barChart.setData(barData);
-
     }
 
     private String getDateForDayMinusN(int n, String format) {
@@ -145,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         for (int i = 1; i <= DAYS_IN_STATISTICS; i++) {
             Random random = new Random();
             DayData dayData = new DayData(getDateForDayMinusN(i, "yyyyMMdd"), random.nextInt(20000));
-            db.updateDayDataOrCreate(dayData);
+            database.updateDayDataOrCreate(dayData);
         }
     }
 
@@ -172,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         int since_boot = (int) event.values[0];
-        int todaySteps = db.getStepCountForDay(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        int todaySteps = database.getStepCountForDay(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
 
         if (todaySteps == 0) {
             todayOffset = since_boot;
@@ -181,10 +188,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             db.updateDayDataOrCreate(new DayData(todaysDate, todaySteps));
         } else {
             todaySteps = since_boot - todayOffset;
-            tv_steps.setText(String.valueOf(todaySteps));
-            tv_distance.setText(String.format("%.1f km", getDistance(todaySteps)));
+            textViewSteps.setText(String.valueOf(todaySteps));
+            textViewDistance.setText(String.format("%.1f km", getDistance(todaySteps)));
         }
-        db.updateDayData(new DayData(todaysDate, todaySteps));
+        database.updateDayData(new DayData(todaysDate, todaySteps));
     }
 
     private float getDistance(int steps) {
