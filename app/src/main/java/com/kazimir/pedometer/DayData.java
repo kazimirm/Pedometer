@@ -31,4 +31,11 @@ public class DayData {
     public void setSteps(int steps) {
         this.steps = steps;
     }
+
+    public float getDistance(int stepLength) {
+        float distance = this.steps * stepLength;
+        return (distance / 100000);
+    }
+
+
 }

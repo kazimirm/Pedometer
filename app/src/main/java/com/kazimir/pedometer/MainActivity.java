@@ -67,12 +67,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         database = DatabaseHandler.getInstance(this);
-        todaySteps = database.getStepCountForDay(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        DayData todayDayData = database.getDayData(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
 
         createGraph();
-        binding.textViewSteps.setText(String.valueOf(todaySteps));
+        binding.textViewSteps.setText(String.valueOf(todayDayData.getSteps()));
 
-        binding.textViewDistance.setText(String.format("%.1f km", getDistance(todaySteps)));
+        binding.textViewDistance.setText(String.format("%.1f km", todayDayData.getDistance(stepLength)));
 
         binding.buttonSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         barChart.getAxisRight().setDrawAxisLine(false);
     }
 
-    private String getDateForDayMinusN(int n, String format) {
+    protected String getDateForDayMinusN(int n, String format) {
         String date = new SimpleDateFormat(format).format(dayMinusN(n));
         return date;
     }
@@ -233,14 +233,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         } else {
             todaySteps = since_boot - todayOffset;
             binding.textViewSteps.setText(String.valueOf(todaySteps));
-            binding.textViewDistance.setText(String.format("%.1f km", getDistance(todaySteps)));
+            DayData dayData = new DayData(todaysDate, todaySteps);
+            binding.textViewDistance.setText(String.format("%.1f km", dayData.getDistance(stepLength)));
+            database.updateDayData(new DayData(todaysDate, todaySteps));
         }
-        database.updateDayData(new DayData(todaysDate, todaySteps));
-    }
 
-    private float getDistance(int steps) {
-        float distance = steps * stepLength;
-        return (distance / 100000);
     }
 
     @Override
